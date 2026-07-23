@@ -2,11 +2,16 @@ package com.apiwatch.user_service.exception;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Data
 @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ApiErrorResponse {
 
     private String errorCode;
@@ -17,9 +22,6 @@ public class ApiErrorResponse {
 
     private LocalDateTime timestamp;
 
-	public static Object builder() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 }

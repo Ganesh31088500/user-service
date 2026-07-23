@@ -1,42 +1,18 @@
 package com.apiwatch.user_service.dto.request;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.UUID;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+import com.apiwatch.user_service.enums.Role;
+
 public class CreateUserProfileRequest {
 
-    @NotNull(message = "Auth User Id is required")
     private UUID authUserId;
 
-    @NotBlank(message = "First name is required")
-    @Size(max = 100)
-    private String firstName;
+    private String username;
 
-    @NotBlank(message = "Last name is required")
-    @Size(max = 100)
-    private String lastName;
-
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email")
     private String email;
 
-    @Size(max = 20)
-    private String phoneNumber;
-
-    private String profilePicture;
+    private String role;
 
 	public UUID getAuthUserId() {
 		return authUserId;
@@ -46,20 +22,12 @@ public class CreateUserProfileRequest {
 		this.authUserId = authUserId;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getEmail() {
@@ -70,21 +38,15 @@ public class CreateUserProfileRequest {
 		this.email = email;
 	}
 
-	public String getPhoneNumber() {
-		return phoneNumber;
+	public String getRole() {
+		return role;
 	}
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
+	public void setRole(String role) {
+		this.role = role;
 	}
 
-	public String getProfilePicture() {
-		return profilePicture;
-	}
 
-	public void setProfilePicture(String profilePicture) {
-		this.profilePicture = profilePicture;
-	}
     
     
     

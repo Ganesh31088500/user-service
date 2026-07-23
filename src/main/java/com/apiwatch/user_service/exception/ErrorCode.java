@@ -19,12 +19,7 @@ public enum ErrorCode {
 
     INTERNAL_SERVER_ERROR("USR_999","Internal server error");
 
-    ErrorCode(String code, String message) {
-		this.code=code;
-		this.message=message;
-	}
-
-	private final String code;
+    private final String code;
 
     private final String message;
 

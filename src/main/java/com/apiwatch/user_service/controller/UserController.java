@@ -7,10 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import com.apiwatch.user_service.dto.request.CreateUserProfileRequest;
 import com.apiwatch.user_service.dto.request.UpdateUserProfileRequest;
+import com.apiwatch.user_service.dto.response.ApiResponse;
 import com.apiwatch.user_service.dto.response.UserResponse;
+import com.apiwatch.user_service.exceptions.UserAlreadyExistsException;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,60 +26,31 @@ public class UserController {
    @Autowired
     private  com.apiwatch.user_service.service.UserService userService;
 
-    @PostMapping
-    public ResponseEntity<com.apiwatch.user_service.dto.response.UserResponse> createUser(
-            @Valid @RequestBody com.apiwatch.user_service.dto.request.CreateUserProfileRequest request) {
+   @GetMapping("/me")
+   public ResponseEntity<ApiResponse<UserResponse>> getProfile() {
 
-        UserResponse response = userService.createUser(request);
+       return ResponseEntity.ok(
+               ApiResponse.success(userService.getMyProfile())
+       );
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
-    }
+   }
+   @PostMapping("/profile")
+   public ResponseEntity<ApiResponse<Void>> createProfile(
+           @Valid @RequestBody CreateUserProfileRequest request) throws UserAlreadyExistsException {
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUser(
-            @PathVariable UUID id) {
+       userService.createUserProfile(request);
 
-        return ResponseEntity.ok(
-                userService.getUser(id)
-        );
-    }
+       return ResponseEntity.status(HttpStatus.CREATED)
+               .body(ApiResponse.success("User profile created successfully."));
+   }
+   @PutMapping("/me")
+   public ResponseEntity<ApiResponse<UserResponse>> updateProfile(
+           @Valid @RequestBody UpdateUserProfileRequest request) {
 
-    @GetMapping("/auth/{authUserId}")
-    public ResponseEntity<UserResponse> getUserByAuthId(
-            @PathVariable UUID authUserId) {
+       return ResponseEntity.ok(
+               ApiResponse.success(userService.updateMyProfile(request))
+       );
 
-        return ResponseEntity.ok(
-                userService.getUserByAuthUserId(authUserId)
-        );
-    }
-
-    @GetMapping
-    public ResponseEntity<List<UserResponse>> getAllUsers() {
-
-        return ResponseEntity.ok(
-                userService.getAllUsers()
-        );
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> updateUser(
-            @PathVariable UUID id,
-            @Valid @RequestBody UpdateUserProfileRequest request) {
-
-        return ResponseEntity.ok(
-                userService.updateUser(id, request)
-        );
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(
-            @PathVariable UUID id) {
-
-        userService.deleteUser(id);
-
-        return ResponseEntity.noContent().build();
-    }
+   }
 
 }

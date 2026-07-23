@@ -1,114 +1,101 @@
 package com.apiwatch.user_service.service;
 
+import java.time.LocalDateTime;
 
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.apiwatch.user_service.dto.request.CreateUserProfileRequest;
 import com.apiwatch.user_service.dto.request.UpdateUserProfileRequest;
 import com.apiwatch.user_service.dto.response.UserResponse;
 import com.apiwatch.user_service.entity.User;
+import com.apiwatch.user_service.enums.Role;
+import com.apiwatch.user_service.enums.UserStatus;
+import com.apiwatch.user_service.exception.UserNotFoundException;
+import com.apiwatch.user_service.exceptions.UserAlreadyExistsException;
 import com.apiwatch.user_service.mapper.UserMapper;
 import com.apiwatch.user_service.repository.UserRepository;
+import com.apiwatch.user_service.security.SecurityUtils;
 
-import java.util.List;
-import java.util.UUID;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class UserServiceImpl implements UserService {
-@Autowired
-    private  UserRepository repository;
 
-    private  UserMapper mapper;
+    private final UserRepository userRepository;
+
+    private final UserMapper userMapper;
+
+    private final SecurityUtils securityUtils;
 
     @Override
-    public UserResponse createUser(CreateUserProfileRequest request) {
+    public void createUserProfile(CreateUserProfileRequest request) throws UserAlreadyExistsException {
 
-        if (repository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+
+            throw  new UserAlreadyExistsException(
+                    "User already exists with email : " + request.getEmail());  //Unhandled exception type UserAlreadyExistsException
+
         }
+        Role role = Role.valueOf(
+        	    request.getRole().replace("ROLE_", "")
+        	);
+        User user =  User.builder()
+                .authUserId(request.getAuthUserId())
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .role(role.name())
+                .status(UserStatus.ACTIVE)
+                .enabled(true)
+                .profilePicture("/avatars/default.png")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
 
-        if (repository.existsByAuthUserId(request.getAuthUserId())) {
-            throw new RuntimeException("User already exists");
-        }
+        userRepository.save(user);
 
-        User user = mapper.toEntity(request);
-
-        User savedUser = repository.save(user);
-
-        return mapper.toResponse(savedUser);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public UserResponse getUser(UUID id) {
+    public UserResponse getMyProfile() {
 
-        User user = repository.findById(id)
+    	String username = securityUtils.getCurrentUsername();
+
+        User user = userRepository
+
+                .findByUsername(username)
+
                 .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+                        new UserNotFoundException("User not found"));
 
-        return mapper.toResponse(user);
-
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public UserResponse getUserByAuthUserId(UUID authUserId) {
-
-        User user = repository.findByAuthUserId(authUserId)
-                .orElseThrow(() ->
-                        new RuntimeException("User not found"));
-
-        return mapper.toResponse(user);
+        return userMapper.toResponse(user);
 
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<UserResponse> getAllUsers() {
+    public UserResponse updateMyProfile(UpdateUserProfileRequest request) {
 
-        return repository.findAll()
-                .stream()
-                .map(mapper::toResponse)
-                .toList();
+    	 String username = securityUtils.getCurrentUsername();
 
-    }
+    	    User user = userRepository
 
-    @Override
-    public UserResponse updateUser(UUID id,
-                                   UpdateUserProfileRequest request) {
+    	            .findByUsername(username)
 
-        User user = repository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+    	            .orElseThrow(() ->
+    	                    new UserNotFoundException("User not found"));
 
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setEmail(request.getEmail());
-        user.setPhoneNumber(request.getPhoneNumber());
-        user.setProfilePicture(request.getProfilePicture());
+    	    user.setFirstName(request.getFirstName());
 
-        return mapper.toResponse(repository.save(user));
+    	    user.setLastName(request.getLastName());
+
+    	    user.setPhoneNumber(request.getPhoneNumber());
+
+    	    User updatedUser = userRepository.save(user);
+
+    	    return userMapper.toResponse(updatedUser);
 
     }
-
-    @Override
-    public void deleteUser(UUID id) {
-
-        User user = repository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("User not found"));
-
-        repository.delete(user);
-
-    }
-
-
 
 }

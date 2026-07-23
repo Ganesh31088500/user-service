@@ -24,5 +24,8 @@ public interface UserMapper {
     User toEntity(CreateUserProfileRequest request);
 
     UserResponse toResponse(User user);
+    
+
+
 
 }

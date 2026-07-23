@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.apiwatch.user_service.enums.Role;
 import com.apiwatch.user_service.enums.UserStatus;
 
 @Data
@@ -17,25 +18,24 @@ import com.apiwatch.user_service.enums.UserStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponse {
+	  private UUID id;
 
-    private UUID id;
+	    private UUID authUserId;
 
-    private UUID authUserId;
+	    private String username;
 
-    private String firstName;
+	    private String email;
 
-    private String lastName;
+	    private String firstName;
 
-    private String email;
+	    private String lastName;
 
-    private String phoneNumber;
+	    private String phoneNumber;
 
-    private String profilePicture;
+	    private String avatarUrl;
 
-    private UserStatus status;
+	    private String role;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
+	    private Boolean enabled;
 
 }

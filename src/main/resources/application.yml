@@ -6,13 +6,13 @@ spring:
     name: USER-SERVICE
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/user_db
-    username: postgres
-    password: postgres
+    url: jdbc:mysql://127.0.0.1:3306/user_db
+    username: root
+    password: root
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
 
     show-sql: true
 
@@ -21,7 +21,7 @@ spring:
         format_sql: true
 
   flyway:
-    enabled: true
+    enabled: false
 
 eureka:
   client:
@@ -33,3 +33,14 @@ management:
     web:
       exposure:
         include: "*"
+
+logging:
+  level:
+    root: INFO
+    com.apiwatch: DEBUG
+
+jwt:
+  secret: VGhpcy1pcy1BUElXYXRjaC1TdXBlci1TZWNyZXQtS2V5LUZvci1KV1QtMjAyNg==
+  issuer: apiwatch-auth-service
+  access-token-expiration: 900000
+  refresh-token-expiration: 604800000

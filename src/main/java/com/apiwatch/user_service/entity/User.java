@@ -3,16 +3,19 @@ package com.apiwatch.user_service.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.apiwatch.user_service.enums.Role;
 import com.apiwatch.user_service.enums.UserStatus;
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class User extends BaseEntity {
@@ -23,6 +26,8 @@ public class User extends BaseEntity {
 
     @Column(name = "auth_user_id", nullable = false, unique = true)
     private UUID authUserId;
+    @Column(name="username",nullable = false, unique = true)
+    private String username;
 
     @Column(name = "first_name", nullable = false, length = 100)
     private String firstName;
@@ -42,7 +47,10 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserStatus status;
+    private String role;
 
+    private Boolean enabled = true;
+    
 	public UUID getId() {
 		return id;
 	}
