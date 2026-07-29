@@ -52,5 +52,16 @@ public class UserController {
        );
 
    }
+   @GetMapping
+   public ResponseEntity<List<UserResponse>> getAllUsers() {
+
+       return ResponseEntity.ok(userService.getAllUsers());
+
+   }
+   @GetMapping("/{id}")
+   public ResponseEntity<UserResponse> getUserById(@PathVariable UUID id) {
+       return ResponseEntity.ok(userService.getUserById(id));
+   }
+   
 
 }

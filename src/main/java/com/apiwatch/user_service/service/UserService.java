@@ -24,11 +24,11 @@ public interface UserService {
 //                            UpdateUserProfileRequest request);
 //
 //    void deleteUser(UUID id);
-	
+	UserResponse getUserById(UUID id);
 	 void createUserProfile(CreateUserProfileRequest request) throws UserAlreadyExistsException;
 
 	    UserResponse getMyProfile();
-
+	    List<UserResponse> getAllUsers();
 	    UserResponse updateMyProfile(UpdateUserProfileRequest request);
 
 }

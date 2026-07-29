@@ -1,6 +1,8 @@
 package com.apiwatch.user_service.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -57,7 +59,15 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
     }
+    @Override
+    public List<UserResponse> getAllUsers() {
 
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toResponse)
+                .toList();
+
+    }
     @Override
     public UserResponse getMyProfile() {
 
@@ -96,6 +106,15 @@ public class UserServiceImpl implements UserService {
 
     	    return userMapper.toResponse(updatedUser);
 
+    }
+
+    @Override
+    public UserResponse getUserById(UUID id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return userMapper.toResponse(user);
     }
 
 }
