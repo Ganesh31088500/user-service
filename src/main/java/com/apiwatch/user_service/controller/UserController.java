@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import com.apiwatch.user_service.dto.request.AssignRoleRequest;
 import com.apiwatch.user_service.dto.request.CreateUserProfileRequest;
 import com.apiwatch.user_service.dto.request.UpdateUserProfileRequest;
 import com.apiwatch.user_service.dto.response.ApiResponse;
@@ -52,6 +53,26 @@ public class UserController {
        );
 
    }
+   @PutMapping("/{id}/role")
+   public ResponseEntity<Void> updateRole(
+           @PathVariable UUID id,
+           @RequestBody AssignRoleRequest request) {
+	    System.out.println("Received role update for authUserId = " + id);
+	    System.out.println("Role = " + request.getRole());
+       userService.updateRole(id, request);
+       System.out.println("After role update for authUserId = " + id);
+       System.out.println("Role = " + request.getRole());
+       return ResponseEntity.noContent().build();
+   }
+//   @PutMapping("/{id}/permissions")
+//   public ResponseEntity<Void> updatePermissions(
+//           @PathVariable UUID id,
+//           @RequestBody UserPermissionUpdateRequest request) {
+//
+//       userService.updatePermissions(id, request);
+//
+//       return ResponseEntity.noContent().build();
+//   }
    @GetMapping
    public ResponseEntity<List<UserResponse>> getAllUsers() {
 

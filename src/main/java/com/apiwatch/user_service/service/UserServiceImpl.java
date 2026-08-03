@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.apiwatch.user_service.dto.request.AssignRoleRequest;
 import com.apiwatch.user_service.dto.request.CreateUserProfileRequest;
 import com.apiwatch.user_service.dto.request.UpdateUserProfileRequest;
 import com.apiwatch.user_service.dto.response.UserResponse;
@@ -20,7 +21,8 @@ import com.apiwatch.user_service.security.SecurityUtils;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -42,8 +44,10 @@ public class UserServiceImpl implements UserService {
 
         }
         Role role = Role.valueOf(
-        	    request.getRole().replace("ROLE_", "")
+        	    request.getRole()
         	);
+        
+        log.info(" Role " + role);
         User user =  User.builder()
                 .authUserId(request.getAuthUserId())
                 .username(request.getUsername())
@@ -115,6 +119,20 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return userMapper.toResponse(user);
+    }
+    @Override
+    @Transactional
+    public void updateRole(UUID authUserId, AssignRoleRequest request) {
+
+        User user = userRepository.findByAuthUserId(authUserId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        System.out.println("In service update: " + user.getRole());
+
+        user.setRole(request.getRole());
+
+        userRepository.save(user);
+        System.out.println("After update: " + user.getRole());
+
     }
 
 }

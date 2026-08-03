@@ -5,6 +5,7 @@ package com.apiwatch.user_service.service;
 import java.util.List;
 import java.util.UUID;
 
+import com.apiwatch.user_service.dto.request.AssignRoleRequest;
 import com.apiwatch.user_service.dto.request.CreateUserProfileRequest;
 import com.apiwatch.user_service.dto.request.UpdateUserProfileRequest;
 import com.apiwatch.user_service.dto.response.UserResponse;
@@ -26,6 +27,7 @@ public interface UserService {
 //    void deleteUser(UUID id);
 	UserResponse getUserById(UUID id);
 	 void createUserProfile(CreateUserProfileRequest request) throws UserAlreadyExistsException;
+	 void updateRole(UUID id, AssignRoleRequest request);
 
 	    UserResponse getMyProfile();
 	    List<UserResponse> getAllUsers();

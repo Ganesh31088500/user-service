@@ -29,10 +29,14 @@ eureka:
       defaultZone: http://localhost:8761/eureka
 
 management:
+  endpoint:
+    web:
+      exposure:
+        include: always
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: health,info,prometheus
 
 logging:
   level:
