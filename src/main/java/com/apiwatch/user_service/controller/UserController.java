@@ -53,6 +53,13 @@ public class UserController {
        );
 
    }
+   @GetMapping("/email/{email}")
+   public ResponseEntity<UserResponse> getUserByEmail(
+           @PathVariable String email) {
+
+       return ResponseEntity.ok(
+               userService.getUserByEmail(email));
+   }
    @PutMapping("/{id}/role")
    public ResponseEntity<Void> updateRole(
            @PathVariable UUID id,
@@ -83,6 +90,8 @@ public class UserController {
    public ResponseEntity<UserResponse> getUserById(@PathVariable UUID id) {
        return ResponseEntity.ok(userService.getUserById(id));
    }
+   
+   
    
 
 }

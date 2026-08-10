@@ -32,5 +32,5 @@ public interface UserService {
 	    UserResponse getMyProfile();
 	    List<UserResponse> getAllUsers();
 	    UserResponse updateMyProfile(UpdateUserProfileRequest request);
-
+	    UserResponse getUserByEmail(String email);
 }

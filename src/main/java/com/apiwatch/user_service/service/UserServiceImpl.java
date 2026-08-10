@@ -134,5 +134,21 @@ public class UserServiceImpl implements UserService {
         System.out.println("After update: " + user.getRole());
 
     }
+    @Override
+    public UserResponse getUserByEmail(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "User not found : " + email));
+
+        return UserResponse.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+//                .active(user.getActive())
+                .build();
+    }
 
 }
